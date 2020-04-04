@@ -1,0 +1,9 @@
+h1{
+    color: purple !important;
+    font-size: 150%;
+}
+h1:hover{
+    color:red;
+    font-size: 100%;
+    transition: 1000ms;
+}
