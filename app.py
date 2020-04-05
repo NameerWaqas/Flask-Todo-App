@@ -3,39 +3,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import pyodbc
+import json
+
 app = Flask(__name__)
 
 @app.route('/')
 def index(fireToast='-1'):
-    conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=NameerPC\MSSQL;'
-                      'Database=tempDB;'
-                      'Trusted_Connection=yes;')
-    conn.autocommit = True
-    cursor = conn.cursor()
-    # cursor.execute('DROP TABLE todoTable')
-    # cursor.execute('''CREATE TABLE todoTable(
-    #     todoID INT NOT NULL PRIMARY KEY IDENTITY,
-    #     todo TEXT
-    # ) ''')
-    cursor.execute('SELECT * from todoTable')
+    cursor.execute('SELECT * from '+currentTable+' ')
     return render_template('index.html',todos=cursor.fetchall(),fireToast=fireToast)
 
 @app.route('/todos/',methods=['GET','POST'])
-def showTodos():
-    return render_template('todos.html')
+def showTodos(check='0'):
+    cursor.execute('SELECT * FROM tableNames')
+    temp = cursor.fetchall()
+    return render_template('todos.html',tableNames = temp,check=check)
 
 @app.route('/add/',methods=['GET','POST'])
 def handleHomePost():
     if request.method=='POST':
         todo = request.form['todo']
-        conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=NameerPC\MSSQL;'
-                      'Database=tempDB;'
-                      'Trusted_Connection=yes;')
-        conn.autocommit = True
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO todoTable VALUES(?)",todo)
+        cursor.execute("INSERT INTO "+currentTable+" VALUES(?)",(todo))
         cursor.commit()        
     return index(fireToast='1')
 
@@ -43,13 +30,8 @@ def handleHomePost():
 def handleUpdate():
     if request.method=='POST':
         todoID,message= request.form['updateID'].split(',')
-        conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=NameerPC\MSSQL;'
-                      'Database=tempDB;'
-                      'Trusted_Connection=yes;')
-        conn.autocommit = True
-        cursor = conn.cursor()
-        cursor.execute("update todoTable set todo = ? where todoID = ?",(message,int(todoID)))
+
+        cursor.execute("update "+currentTable+" set todo = ? where todoID = ?",(message,int(todoID)))
         cursor.commit()        
     return index(fireToast='1')
 
@@ -63,35 +45,73 @@ def handleDelete():
         except:
             return index(fireToast='0')
         else:    
-            conn = pyodbc.connect('Driver={SQL Server};'
-                        'Server=NameerPC\MSSQL;'
-                        'Database=tempDB;'
-                        'Trusted_Connection=yes;')
-            conn.autocommit = True
-            cursor = conn.cursor()
-            cursor.execute("Delete From todoTable where todoID = ?",(int(id)))
+           
+            cursor.execute("Delete From "+currentTable+" where todoID = ?",(int(id)))
             cursor.commit()
-            cursor.execute("SELECT todoTable.todo from todoTable where todoID>?",(int(id)))
+            cursor.execute("SELECT "+currentTable+".todo from "+currentTable+" where todoID>?",(int(id)))
             tempTodos = cursor.fetchall()
-            cursor.execute("DELETE from todoTable where todoID>?",(int(id)))
-            # cursor.execute("select COUNT(todoID) from todoTable")
-            # maxID = cursor.fetchall()
-            cursor.execute("DBCC CHECKIDENT ('todoTable', RESEED, ?) ",(int(id)-1))
+            cursor.execute("DELETE from "+currentTable+" where todoID>?",(int(id)))
+            cursor.execute("DBCC CHECKIDENT ( "+currentTable+" , RESEED, ?) ",(int(id)-1))
             for todo in tempTodos:
-                cursor.execute("INSERT INTO todoTable VALUES(?)",todo)
+                cursor.execute("INSERT INTO "+currentTable+" VALUES(?)",(todo))
             cursor.commit()            
             return index(fireToast='1')
 
-@app.route('/addTodoList',methods=['GET','POST'])
+@app.route('/addTodoList/',methods=['GET','POST'])
 def handleAddTodoList():
-    return render_template('index.html')
+    global currentTable
+    currentTable = str(request.form['tableName'])
+    cursor.execute("""CREATE TABLE """+currentTable+""" (
+        todoID INT NOT NULL PRIMARY KEY IDENTITY,
+        todo TEXT
+    ) """) 
+    cursor.execute('INSERT INTO tableNames VALUES(?)',currentTable)
+    return redirect('/')
+
+@app.route('/showList/',methods=['GET','POST'])
+def handleShowList():
+    global currentTable
+    currentTable = request.form['tableName']
+    return redirect('/')
+
+@app.route('/dropList/',methods=['GET','POST'])
+def handelDropList():
+    listName = request.form['listName']
+    if currentTable==listName:
+        return showTodos(check=1)
+    else:
+        # cursor.execute('DROP TABLE  '+listName)   
+        cursor.execute('DELETE FROM tableNames where CAST(name as VARCHAR(128)) = CAST( ? as VARCHAR(128))',listName) 
+        cursor.commit()
+        return redirect('/todos/')
+
+
 
 @app.errorhandler(404) 
-def invalid_route(e): 
+def invalid_route(e):
     return render_template('404.html')
 
 
 
 
 
-if __name__ =='__main__':    app.run(debug=True)
+if __name__ =='__main__':
+    conn = pyodbc.connect('Driver={SQL Server};'
+                        'Server=NameerPC\MSSQL;'
+                        'Database=tempDB;'
+                        'Trusted_Connection=yes;')
+    conn.autocommit = True
+    cursor = conn.cursor()
+    # cursor.execute('CREATE DATABASE TodosDB')
+    cursor.execute('USE TodosDB')
+    # cursor.execute('''CREATE TABLE baseList(
+    #     todoID INT NOT NULL PRIMARY KEY IDENTITY,
+    #     todo TEXT
+    # )''')
+    # cursor.execute('''CREATE TABLE tableNames(
+    #     tableID INT NOT NULL PRIMARY KEY IDENTITY,
+    #     name TEXT
+    # ) ''')
+    # cursor.execute("INSERT INTO tableNames VALUES('baseList')")
+    currentTable="baseList"
+    app.run(debug=True)

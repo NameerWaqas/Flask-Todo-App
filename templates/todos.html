@@ -44,9 +44,29 @@
             /* overflow: scroll; */
             /* margin-top: 10vh; */
         }
-        #animationAlert{
-            background: linear-gradient(to right,rgb(255,243,205),rgb(243, 235, 210),rgb(204,229,255));
-            margin-top: 5px;;
+
+        #animationAlert {
+            background: linear-gradient(to right, rgb(231, 222, 192), rgb(255, 234, 172), rgb(204, 229, 255));
+            margin-top: 5px;
+            ;
+        }
+
+        .todoListsBtn {
+            width: 73%;
+            /* background-color: inherit; */
+            /* opacity:0.5; */
+            color: black;
+            margin-left: 0;
+            display: inline-block;
+        }
+
+        .delBtn {
+            width: 25%;
+            background-color: red
+        }
+
+        .delBtn:hover {
+            background-color: rgb(216, 2, 2)
         }
     </style>
 </head>
@@ -55,21 +75,21 @@
     <div>
         <nav>
             <div class="nav-wrapper teal lighten-2">
-                <a href="#" class="brand-logo">TODO</a>
+                <a href="" class="brand-logo">TODO</a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <!-- <li><a href="sass.html">Sass</a></li> -->
                     <li><a href="http://127.0.0.1:5000/">Todo List</a></li>
                     <li><a href="http://127.0.0.1:5000/todos/">Todos</a></li>
                 </ul>
             </div>
+            
         </nav>
         <div id='todosBackLeft' class="alert alert-primary"></div>
         <div id='todosBackRight' class="alert alert-warning"></div>
         <div id="main">
             <!-- <p>Hello World!</p> -->
-            <form action="http://127.0.0.1:5000/addTodoList" method='POST'>
-                <input type="text" class="form-control" placeholder='Enter the table name here'
-                name='tebleName'>
+            <form action="http://127.0.0.1:5000/addTodoList/" method='POST'>
+                <input type="text" class="form-control" placeholder='Enter the table name here' name='tableName'>
                 <button type='submit' class='btn btn-submit'>Add List!</button>
             </form>
 
@@ -90,31 +110,54 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
- 
+
         function handleAnimation(arr) {
             if (arr.length == 1) {
                 return setTimeout(() => {
                     document.getElementById('main').innerHTML += `
-                    <div class="alert alert-success center" id='animationAlert'>${arr[0]}</div>
+                    <div class="alert alert-success " id='animationAlert'>
+                        <form method='POST' action='http://127.0.0.1:5000/showList/' style="display: inline">
+                            <input type="hidden"  name="tableName" value=${arr[0]} />
+                            <input  type="submit" class='btn btn-info todoListsBtn' name="tableName" value=${arr[0]} />
+                        </form>
+                        <form method = "POST" action="http://127.0.0.1:5000/dropList/" style="display: inline">
+                            <input type="hidden"  name = "listName" value=${arr[0]} />
+                            <button type = 'submit' class = "btn btn-warning delBtn">Delete</button>    
+                        </form>    
+                    </div>
                     `
-                }, 100)
+                }, 200)
 
             }
             else {
-
                 return setTimeout(() => {
                     document.getElementById('main').innerHTML += `
-                 <div class="alert alert-primary center" id='animationAlert'>${arr[0]}</div>
+                    <div class="alert alert-success" id='animationAlert'>
+                        <form action='http://127.0.0.1:5000/showList/' method='POST' style="display: inline">
+                            <input type="hidden"  name="tableName" value=${arr[0]} />
+                            <input type="submit" class='btn btn-info todoListsBtn' value=${arr[0]} >
+                        </form>
+                        <form method = "POST" action="http://127.0.0.1:5000/dropList/" style="display: inline">
+                            <input type="hidden"  name = "listName" value=${arr[0]} />
+                            <button type = 'submit' class = "btn btn-warning delBtn">Delete</button>    
+                        </form>      
+                    </div>
                 `;
-                handleAnimation(arr.slice(1))
-                }, 100);
-
+                    handleAnimation(arr.slice(1))
+                }, 200);
             }
 
         }
-        handleAnimation(['1','2','3','4',5,6,7,8])
 
+        var param = {{ tableNames| safe}};
+        handleAnimation(param)
+        // console.log({{tableNames}})
+        // handleAnimation(['1,2,3,4,5'])
 
+        if ({{check}} == '1') {
+            var toastHTML = '<span>Please select another List First.</span>';
+            M.toast({ html: toastHTML, classes: 'rounded' });
+        }
     </script>
 </body>
 
