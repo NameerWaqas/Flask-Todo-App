@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- <link rel="stylesheet" type="text/css" href="../templates/styles/styles.css" > -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <style>
-        button {
-            margin-top: 3%
+        button,#button {
+            margin-top: 3%;
+            width: 150px!important
         }
-        input{
+
+        input {
             margin-top: 2%;
         }
 
@@ -30,8 +34,9 @@
             height: 100vh;
             overflow: scroll;
         }
-        .form-group{
-            height:31%
+
+        .form-group {
+            height: 31%
         }
     </style>
 </head>
@@ -40,32 +45,32 @@
     <div id='left' class="alert alert-warning">
         <section class="form-group alert alert-success">
             <form action="http://127.0.0.1:5000/add/" method='POST'>
-            <!-- <form action="" method='POST'> -->
-            
-                    <label for="todoID">ENTER TODO:</label>
-                    <input type="text" class="form-control" id="todoID" name="todo" placeholder="Enter todo here"/>
-                    <!-- <button class="btn btn-success" type='submit'>Add Todo!</button>
+                <!-- <form action="" method='POST'> -->
+
+                <label for="todoID">ENTER TODO:</label>
+                <input type="text" class="form-control" id="todoID" name="todo" placeholder="Enter todo here" />
+                <!-- <button class="btn btn-success" type='submit'>Add Todo!</button>
                      -->
-                     <input type="submit" value='Add Todo!' class="btn btn-success">
-                
+                <input type="submit" value='Add Todo!' class="btn btn-success" id='button'>
+
             </form>
         </section>
         <section class='form-group alert alert-primary'>
             <form action="http://127.0.0.1:5000/update/" method='POST'>
-                <div >
+                <div>
                     <label for="updateID">UPDATE TODO:</label>
                     <input type="text" class="form-control" name='updateID'
-                    placeholder="Enter index of todo and new statement like: 1,This is First updated todo">
+                        placeholder="Enter index of todo and new statement like: 1,This is First updated todo">
                     <button type='submit' class='btn btn-primary'>Update Todo!</button>
                 </div>
             </form>
         </section>
         <section class='form-group alert alert-danger'>
-            <form action="http://127.0.0.1:5000/delete/"  method ='POST'>
+            <form action="http://127.0.0.1:5000/delete/" method='POST'>
                 <div>
                     <label for="deleteID">DELETE TODO:</label>
-                    <input type='text'class='form-control'name='deleteID' id='deleteID' 
-                    placeholder="Enter the index of todo to be deleted">
+                    <input type='text' class='form-control' name='deleteID' id='deleteID'
+                        placeholder="Enter the index of todo to be deleted">
                     <button class="btn btn-danger" type='submit'>DELETE TODO!</button>
                 </div>
             </form>
@@ -76,10 +81,10 @@
     <div id='right' class="alert alert-info">
         <label for="">TODOS:</label>
         {% for todo in todos %}
-            <div class="alert alert-warning">
-                {{todo[0]}}) {{todo[1]}}
-            </div>
-            {%endfor%}
+        <div class="alert alert-warning">
+            {{todo[0]}}) {{todo[1]}}
+        </div>
+        {%endfor%}
     </div>
 
 
@@ -93,8 +98,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-
+        check = {{fireToast}}
+        if (check=='1'){
+            var toastHTML = '<span>Query Executed Successfully</span>';
+            M.toast({ html: toastHTML,classes: 'rounded' });
+        }
+        else if(check=='0'){
+            var toastHTML = '<span>Error: Invalid Input</span>';
+            M.toast({ html: toastHTML,classes: 'rounded' });
+        }
+        
+        // M.toast()
     </script>
 </body>
 

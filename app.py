@@ -6,7 +6,7 @@ import pyodbc
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def index(fireToast='-1'):
     conn = pyodbc.connect('Driver={SQL Server};'
                       'Server=NameerPC\MSSQL;'
                       'Database=tempDB;'
@@ -20,7 +20,7 @@ def index():
     # ) ''')
     cursor.execute('SELECT * from todoTable')
 
-    return render_template('index.html',todos=cursor.fetchall())
+    return render_template('index.html',todos=cursor.fetchall(),fireToast=fireToast)
 @app.route('/add/',methods=['GET','POST'])
 def handleHomePost():
     if request.method=='POST':
@@ -33,7 +33,7 @@ def handleHomePost():
         cursor = conn.cursor()
         cursor.execute("INSERT INTO todoTable VALUES(?)",todo)
         cursor.commit()        
-    return redirect('/')
+    return index(fireToast='1')
 
 @app.route('/update/',methods=['GET','POST'])
 def handleUpdate():
@@ -47,25 +47,36 @@ def handleUpdate():
         cursor = conn.cursor()
         cursor.execute("update todoTable set todo = ? where todoID = ?",(message,int(todoID)))
         cursor.commit()        
-    return redirect('/')
+    return index(fireToast='1')
 
 @app.route('/delete/',methods=['GET','POST'])
 def handleDelete():
+    
     if request.method == 'POST':
         id = request.form['deleteID']
-        conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=NameerPC\MSSQL;'
-                      'Database=tempDB;'
-                      'Trusted_Connection=yes;')
-        conn.autocommit = True
-        cursor = conn.cursor()
-        cursor.execute("Delete From todoTable where todoID = ?",(int(id)))
-        cursor.commit()
-        cursor.execute("select COUNT(todoID) from todoTable")
-        maxID = cursor.fetchall()
-        cursor.execute("DBCC CHECKIDENT ('todoTable', RESEED, ?) ",(int(maxID[0][0])))
-        cursor.commit()        
-    return redirect('/')
+        try:
+            int(id)
+        except:
+            return index(fireToast='0')
+        else:    
+            conn = pyodbc.connect('Driver={SQL Server};'
+                        'Server=NameerPC\MSSQL;'
+                        'Database=tempDB;'
+                        'Trusted_Connection=yes;')
+            conn.autocommit = True
+            cursor = conn.cursor()
+            cursor.execute("Delete From todoTable where todoID = ?",(int(id)))
+            cursor.commit()
+            cursor.execute("SELECT todoTable.todo from todoTable where todoID>?",(int(id)))
+            tempTodos = cursor.fetchall()
+            cursor.execute("DELETE from todoTable where todoID>?",(int(id)))
+            # cursor.execute("select COUNT(todoID) from todoTable")
+            # maxID = cursor.fetchall()
+            cursor.execute("DBCC CHECKIDENT ('todoTable', RESEED, ?) ",(int(id)-1))
+            for todo in tempTodos:
+                cursor.execute("INSERT INTO todoTable VALUES(?)",todo)
+            cursor.commit()            
+            return index(fireToast='1')
 
 
 
