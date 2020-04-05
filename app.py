@@ -19,8 +19,12 @@ def index(fireToast='-1'):
     #     todo TEXT
     # ) ''')
     cursor.execute('SELECT * from todoTable')
-
     return render_template('index.html',todos=cursor.fetchall(),fireToast=fireToast)
+
+@app.route('/todos/',methods=['GET','POST'])
+def showTodos():
+    return render_template('todos.html')
+
 @app.route('/add/',methods=['GET','POST'])
 def handleHomePost():
     if request.method=='POST':
@@ -77,6 +81,16 @@ def handleDelete():
                 cursor.execute("INSERT INTO todoTable VALUES(?)",todo)
             cursor.commit()            
             return index(fireToast='1')
+
+@app.route('/addTodoList',methods=['GET','POST'])
+def handleAddTodoList():
+    return render_template('index.html')
+
+@app.errorhandler(404) 
+def invalid_route(e): 
+    return render_template('404.html')
+
+
 
 
 

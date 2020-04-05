@@ -11,9 +11,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <style>
-        button,#button {
+        button,
+        #button {
             margin-top: 3%;
-            width: 150px!important
+            width: 150px !important
         }
 
         input {
@@ -23,70 +24,88 @@
         #left {
             position: fixed;
             left: 0%;
-            height: 100vh;
+            height: 90vh;
             width: 50%;
+            /* margin-top: 10vh; */
+            border-right: none;
         }
 
         #right {
             position: fixed;
             left: 50%;
             width: 50%;
-            height: 100vh;
+            height: 90vh;
             overflow: scroll;
+            /* margin-top: 10vh; */
+            border-left: none;
         }
 
         .form-group {
             height: 31%
         }
+        nav{
+            height:10vh !important;
+        }
     </style>
 </head>
 
 <body>
-    <div id='left' class="alert alert-warning">
-        <section class="form-group alert alert-success">
-            <form action="http://127.0.0.1:5000/add/" method='POST'>
-                <!-- <form action="" method='POST'> -->
+    <div>
+        <nav>
+            <div class="nav-wrapper teal lighten-2">
+              <a href="#" class="brand-logo">TODO</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <!-- <li><a href="sass.html">Sass</a></li> -->
+                <li><a href="">Todo List</a></li>
+                <li><a href="http://127.0.0.1:5000/todos">Todos</a></li>
+              </ul>
+            </div>
+          </nav>
+        <div id='left' class="alert alert-warning">
+            <section class="form-group alert alert-success">
+                <form action="http://127.0.0.1:5000/add/" method='POST'>
+                    <!-- <form action="" method='POST'> -->
 
-                <label for="todoID">ENTER TODO:</label>
-                <input type="text" class="form-control" id="todoID" name="todo" placeholder="Enter todo here" />
-                <!-- <button class="btn btn-success" type='submit'>Add Todo!</button>
+                    <label for="todoID">ENTER TODO:</label>
+                    <input type="text" class="form-control" id="todoID" name="todo" placeholder="Enter todo here" />
+                    <!-- <button class="btn btn-success" type='submit'>Add Todo!</button>
                      -->
-                <input type="submit" value='Add Todo!' class="btn btn-success" id='button'>
+                    <input type="submit" value='Add Todo!' class="btn btn-success" id='button'>
 
-            </form>
-        </section>
-        <section class='form-group alert alert-primary'>
-            <form action="http://127.0.0.1:5000/update/" method='POST'>
-                <div>
-                    <label for="updateID">UPDATE TODO:</label>
-                    <input type="text" class="form-control" name='updateID'
-                        placeholder="Enter index of todo and new statement like: 1,This is First updated todo">
-                    <button type='submit' class='btn btn-primary'>Update Todo!</button>
-                </div>
-            </form>
-        </section>
-        <section class='form-group alert alert-danger'>
-            <form action="http://127.0.0.1:5000/delete/" method='POST'>
-                <div>
-                    <label for="deleteID">DELETE TODO:</label>
-                    <input type='text' class='form-control' name='deleteID' id='deleteID'
-                        placeholder="Enter the index of todo to be deleted">
-                    <button class="btn btn-danger" type='submit'>DELETE TODO!</button>
-                </div>
-            </form>
-        </section>
-    </div>
-
-
-    <div id='right' class="alert alert-info">
-        <label for="">TODOS:</label>
-        {% for todo in todos %}
-        <div class="alert alert-warning">
-            {{todo[0]}}) {{todo[1]}}
+                </form>
+            </section>
+            <section class='form-group alert alert-primary'>
+                <form action="http://127.0.0.1:5000/update/" method='POST'>
+                    <div>
+                        <label for="updateID">UPDATE TODO:</label>
+                        <input type="text" class="form-control" name='updateID'
+                            placeholder="Enter index of todo and new statement like: 1,This is First updated todo">
+                        <button type='submit' class='btn btn-primary'>Update Todo!</button>
+                    </div>
+                </form>
+            </section>
+            <section class='form-group alert alert-danger'>
+                <form action="http://127.0.0.1:5000/delete/" method='POST'>
+                    <div>
+                        <label for="deleteID">DELETE TODO:</label>
+                        <input type='text' class='form-control' name='deleteID' id='deleteID'
+                            placeholder="Enter the index of todo to be deleted">
+                        <button class="btn btn-danger" type='submit'>DELETE TODO!</button>
+                    </div>
+                </form>
+            </section>
         </div>
-        {%endfor%}
-    </div>
 
+
+        <div id='right' class="alert alert-info">
+            <label for="">TODOS:</label>
+            {% for todo in todos %}
+            <div class="alert alert-warning">
+                {{todo[0]}}) {{todo[1]}}
+            </div>
+            {%endfor%}
+        </div>
+    </div>
 
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -101,16 +120,16 @@
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-        check = {{fireToast}}
-        if (check=='1'){
+        check = {{ fireToast }}
+        if (check == '1') {
             var toastHTML = '<span>Query Executed Successfully</span>';
-            M.toast({ html: toastHTML,classes: 'rounded' });
+            M.toast({ html: toastHTML, classes: 'rounded' });
         }
-        else if(check=='0'){
+        else if (check == '0') {
             var toastHTML = '<span>Error: Invalid Input</span>';
-            M.toast({ html: toastHTML,classes: 'rounded' });
+            M.toast({ html: toastHTML, classes: 'rounded' });
         }
-        
+
         // M.toast()
     </script>
 </body>

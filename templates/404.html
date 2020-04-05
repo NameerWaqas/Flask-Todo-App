@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" type="text/css" href="../templates/styles/styles.css" > -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        nav {
+            height: 10vh !important;
+        }
+
+        #todosBackLeft {
+            position: fixed;
+            left: 0%;
+            height: 90vh;
+            width: 50%;
+            /* margin-top: 10vh; */
+            border-right: none;
+            z-index: 0 !important;
+            /* display: none; */
+
+        }
+
+        #todosBackRight {
+            position: fixed;
+            left: 50%;
+            width: 50%;
+            height: 90vh;
+            z-index: 0 !important;
+            /* display: none;    */
+            /* overflow: scroll; */
+            /* margin-top: 10vh; */
+        }
+
+        #main {
+            position: fixed;
+            z-index: 1 !important;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 100%;
+            text-align: center;
+            /* margin: 10% 0; */
+            min-height: 200px;
+            background-color: rgba(43, 43, 43, 0.5);
+            /* align-items: center; */
+
+        }
+        p{
+            display: inline;
+            color:#80cbc4
+        }
+        b:hover{
+            font-size: 120%;
+            transition: 500ms;
+                    }
+    </style>
+</head>
+
+<body>
+    <div>
+        <nav>
+            <div class="nav-wrapper grey">
+                <a href="#" class="brand-logo"><p>TODO</p></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <!-- <li><a href="sass.html">Sass</a></li> -->
+                    <li><a href="http://127.0.0.1:5000/"><p>Todo List</p></a></li>
+                    <li><a href="http://127.0.0.1:5000/todos/"><p>Todos</p></a></li>
+                </ul>
+            </div>
+        </nav>
+        <div id='todosBackLeft' class="alert alert-primary"></div>
+        <div id='todosBackRight' class="alert alert-warning"></div>
+        <div id="main" class="justify-content-md-center">
+
+            <h1>404!</h1>
+            <h4>PAGE NOT FOUND</h4>
+            <h5>Go back to the <b onclick="history.back()">previous page</b> of Navigate using navigation bar.</h5>
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
