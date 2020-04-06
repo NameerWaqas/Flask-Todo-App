@@ -77,13 +77,17 @@ def handleShowList():
 @app.route('/dropList/',methods=['GET','POST'])
 def handelDropList():
     listName = request.form['listName']
-    if currentTable==listName:
+    if currentTable==listName :
         return showTodos(check=1)
     else:
-        # cursor.execute('DROP TABLE  '+listName)   
-        cursor.execute('DELETE FROM tableNames where CAST(name as VARCHAR(128)) = CAST( ? as VARCHAR(128))',listName) 
-        cursor.commit()
-        return redirect('/todos/')
+        try:
+            cursor.execute('DROP TABLE  '+listName)   
+        except:
+            return redirect('/todos/')
+        else:   
+            cursor.execute('DELETE FROM tableNames where CAST(name as VARCHAR(128)) = CAST( ? as VARCHAR(128))',listName) 
+            cursor.commit()
+            return redirect('/todos/')
 
 
 
@@ -104,14 +108,22 @@ if __name__ =='__main__':
     cursor = conn.cursor()
     # cursor.execute('CREATE DATABASE TodosDB')
     cursor.execute('USE TodosDB')
-    # cursor.execute('''CREATE TABLE baseList(
-    #     todoID INT NOT NULL PRIMARY KEY IDENTITY,
-    #     todo TEXT
-    # )''')
-    # cursor.execute('''CREATE TABLE tableNames(
-    #     tableID INT NOT NULL PRIMARY KEY IDENTITY,
-    #     name TEXT
-    # ) ''')
+    try:
+         cursor.execute('''CREATE TABLE baseList(
+            todoID INT NOT NULL PRIMARY KEY IDENTITY,
+            todo TEXT
+            )''')
+         cursor.execute('''CREATE TABLE tableNames(
+            tableID INT NOT NULL PRIMARY KEY IDENTITY,
+            name TEXT
+            ) ''')
+    except:
+        cursor.execute("SELECT tableNames.name from tableNames Where CAST(name as VARCHAR(128)) = 'baseList' ")
+        holdResponse = cursor.fetchall()
+        if len(holdResponse) == 0:
+            cursor.execute("INSERT INTO tableNames VALUES('baseList')")
+        # True
+    finally:
     # cursor.execute("INSERT INTO tableNames VALUES('baseList')")
-    currentTable="baseList"
-    app.run(debug=True)
+        currentTable="baseList"
+        app.run(debug=True)
